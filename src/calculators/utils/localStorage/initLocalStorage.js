@@ -1,6 +1,6 @@
 import { bagSize, costPerBag, wastePercentage } from '../../concreteCalculator/constants';
 import { costToggle } from '../../concreteCalculator/constants';
-import { body, getSettings, setSettings, unitToggle } from '../constants';
+import { body, getSettings, setSettings, settingsTemplate, unitToggle } from '../constants';
 import { updateLocalStorageSettings } from './updateLocalStorage';
 
 export const initLocalStorageSettings = () => {
