@@ -4,42 +4,41 @@ import { getDistanceFromLatLonInKm } from '../utils/turf';
 // resets the radius of each geojson object
 // based on the new center coordinates
 export const setRadius = (geoJSONData) => {
-  let filterInstance = getFilterInstance();
+  //if (!geoJSONData?.features?.length) {
+  //  console.warn('No features found in geoJSONData.');
+  //  return;
+  //}
 
-  // by now, all locations should be set
-  geoJSONData.features.forEach((location, index) => {
-    const distance = getDistanceFromLatLonInKm(
-      getCenterCoordinates()[1],
-      getCenterCoordinates()[0],
-      location.geometry.coordinates[1],
-      location.geometry.coordinates[0]
-    );
+  const [centerLng, centerLat] = getCenterCoordinates();
+  const filterInstance = getFilterInstance();
 
+  geoJSONData?.features.forEach((location, index) => {
+    const [lng, lat] = location.geometry.coordinates;
+    const distance = getDistanceFromLatLonInKm(centerLat, centerLng, lat, lng);
     const roundedDistance = Math.round(distance * 10) / 10;
+
     location.properties.radius = roundedDistance;
 
-    const distanceText = getFilterInstance().listInstance.items[index].element.querySelector(
+    const distanceText = filterInstance.listInstance.items[index].element.querySelector(
       "[data-element='distance']"
     );
 
-    if (Number(roundedDistance) >= 0) {
+    if (distanceText) {
       distanceText.textContent = roundedDistance;
       distanceText.style.display = 'block';
-    } else {
-      distanceText.textContent = '';
-      distanceText.style.display = 'none';
     }
 
-    const newDistance = new Set();
-    newDistance.add(distance.toString());
-    filterInstance.listInstance.items[index].props.distance.values = newDistance;
+    filterInstance.listInstance.items[index].props.distance.values = new Set([distance.toString()]);
   });
 
-  const sortedItems = filterInstance.listInstance.items.sort(
-    (a, b) =>
-      a.props.distance.values.values().next().value - b.props.distance.values.values().next().value
-  );
-  filterInstance.listInstance.items = sortedItems;
+  // Safe to sort if items exist
+  if (filterInstance?.listInstance?.items?.length > 1) {
+    filterInstance.listInstance.items.sort((a, b) => {
+      const aDist = parseFloat([...a.props.distance.values][0]);
+      const bDist = parseFloat([...b.props.distance.values][0]);
+      return aDist - bDist;
+    });
+  }
 
   setFilterInstance(filterInstance);
 };

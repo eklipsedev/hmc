@@ -48,7 +48,7 @@ export const setCircleLayer = (value) => (circleLayer = value);
 export const getTimer = () => timer;
 export const setTimer = (value) => (timer = value);
 
-export const getFilterInstance = () => filterInstance;
+export const getFilterInstance = () => filterInstance || null;
 export const setFilterInstance = (value) => (filterInstance = value);
 
 export const getCenterCoordinates = () => centerCoordinates;

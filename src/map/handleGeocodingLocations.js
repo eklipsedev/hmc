@@ -86,7 +86,10 @@ const createSearchResultItem = (feature) => {
 
 // Function to handle search result click events
 const handleSearchResultClick = (feature) => {
-  const locationsData = setLocationsAsGeoJSON(getFilterInstance().listInstance.items);
+  //const locationsData = setLocationsAsGeoJSON(getFilterInstance()?.listInstance?.items);
+  const locationsData = getFilterInstance()?.listInstance?.items
+    ? setLocationsAsGeoJSON(getFilterInstance().listInstance.items)
+    : null;
   setLocationsData(locationsData);
 
   searchElement.value = feature.place_name;
@@ -100,7 +103,12 @@ const handleSearchResultClick = (feature) => {
   getElement('max-radius').dispatchEvent(new Event('change'));
 
   setRadius(getLocationsData());
-  getFilterInstance().filtersData[0].values = new Set(['0', radiusElement.value]);
+
+  const filter = getFilterInstance();
+  if (!filter?.filtersData?.[0]) return;
+
+  filter.filtersData[0].values = new Set(['0', radiusElement.value]);
+  //getFilterInstance().filtersData[0].values = new Set(['0', radiusElement.value]);
   getFilterInstance().applyFilters();
 
   setLocationAsQueryParams();

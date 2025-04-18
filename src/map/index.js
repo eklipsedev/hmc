@@ -122,7 +122,9 @@ export const handleMap = async () => {
           }
         }
 
-        const locationsData = setLocationsAsGeoJSON(getFilterInstance().listInstance.items);
+        const locationsData = getFilterInstance()?.listInstance?.items
+          ? setLocationsAsGeoJSON(getFilterInstance().listInstance.items)
+          : null;
         setLocationsData(locationsData);
 
         if (longitude && latitude && radius) {
@@ -138,13 +140,21 @@ export const handleMap = async () => {
           setCurrentBounds(getRadiusCircleData());
           setBounds(getRadiusCircleData());
           setRadius(getLocationsData());
-          getFilterInstance().filtersData[0].values = new Set(['0', radiusElement.value]);
-          getFilterInstance().applyFilters();
+
+          const filter = getFilterInstance();
+          //if (!filter?.filtersData?.[0]) return;
+
+          //filter.filtersData[0].values = new Set(['0', radiusElement.value]);
+          if (filter?.filtersData?.[0] && radiusElement.value) {
+            filter.filtersData[0].values = new Set(['0', radiusElement.value]);
+          }
+          //getFilterInstance().filtersData[0].values = new Set(['0', radiusElement.value]);
+          filter?.applyFilters();
         }
 
         toggleHighlightMarkerOnCardHover();
         handlePopup();
-        filterInstances[0].listInstance.renderItems();
+        filterInstances?.[0]?.listInstance.renderItems();
 
         // event listeners
         map.on('click', 'locations', (e) => handleLocationsClick(e));
@@ -164,21 +174,33 @@ export const handleMap = async () => {
         radiusElement.addEventListener('change', () => {
           if (searchElement.value.length) {
             getElement('max-radius').value = radiusElement.value;
-            getFilterInstance().filtersData[0].values = new Set(['0', radiusElement.value]);
+
+            const filter = getFilterInstance();
+
+            if (
+              filter?.filtersData?.[0] &&
+              radiusElement?.value // optional: add more validation here if needed
+            ) {
+              filter.filtersData[0].values = new Set(['0', radiusElement.value]);
+            }
 
             // reset locations data so radius can be set for all items
-            const locationsData = setLocationsAsGeoJSON(getFilterInstance().listInstance.items);
+            //const locationsData = setLocationsAsGeoJSON(getFilterInstance().listInstance.items);
+            const locationsData = filter?.listInstance?.items
+              ? setLocationsAsGeoJSON(filter.listInstance.items)
+              : null;
             setLocationsData(locationsData);
 
             setRadius(getLocationsData());
-            getFilterInstance().applyFilters(); // triggers renderItems
+            filter?.applyFilters(); // triggers renderItems
           }
         });
 
         // handle re-render of list items
-        filterInstances[0].listInstance.on('renderitems', (renderedItems) => {
+        filterInstances?.[0]?.listInstance.on('renderitems', (renderedItems) => {
           // after each render, reset the map markers
-          const locationsData = setLocationsAsGeoJSON(renderedItems);
+          //const locationsData = setLocationsAsGeoJSON(renderedItems);
+          const locationsData = renderedItems?.length ? setLocationsAsGeoJSON(renderedItems) : null;
           setLocationsData(locationsData);
 
           if (map.getLayer('locations')) {

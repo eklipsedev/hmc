@@ -3,6 +3,8 @@ import { toggleFeatureHoverState } from './toggleFeatureHoverState';
 
 // Highlight a marker when the corresponding card is hovered
 export const toggleHighlightMarkerOnCardHover = () => {
+  if (!getFilterInstance()?.listInstance?.items) return;
+
   const { items } = getFilterInstance().listInstance;
 
   // Make sure that each item has an associated feature ID or index
