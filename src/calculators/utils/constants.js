@@ -28,13 +28,13 @@ export let settings = {};
 export let calcType = 'calculator';
 
 // Settings
-export const settingsTemplate = {
+export const settingsTemplate = () => ({
   unitType: isImperialCountry() ? 'imperial' : 'metric',
   costType: costToggle && costToggle.checked ? 'cost-per-area' : 'cost-per-bag',
   bagSize: isImperialCountry() ? '80' : '50',
   costPerBag: '0',
   wastePercentage: '0',
-};
+});
 
 export const getTotal = () => total;
 export const setTotal = (value) => (total = value);

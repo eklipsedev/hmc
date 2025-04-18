@@ -5,7 +5,7 @@ import { updateLocalStorageSettings } from './updateLocalStorage';
 
 export const initLocalStorageSettings = () => {
   const storedSettings = localStorage.getItem('settings');
-  setSettings(storedSettings ? JSON.parse(storedSettings) : settingsTemplate);
+  setSettings(storedSettings ? JSON.parse(storedSettings) : settingsTemplate());
 
   if (Object.keys(getSettings()).length !== 0) {
     // unit type check
