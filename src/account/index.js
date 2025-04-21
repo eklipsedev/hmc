@@ -4,7 +4,7 @@ import { forms } from './constants';
 import { handleNewEmail } from './handleNewEmailForm';
 import { handleNewPassword } from './handleNewPasswordForm';
 import { handleImages } from './images';
-import { handleOnboard } from './onboarding';
+//import { handleOnboard } from './onboarding';
 //import { handleOnboardingRedirect } from './onboarding/helpers';
 import { handleProfile } from './profile';
 import { setLiveLink } from './profile/helpers';
@@ -13,7 +13,7 @@ import { handleServices } from './services';
 export const handleAccount = async () => {
   if (!member) return;
 
-  await handleOnboard(forms.onboard);
+  //await handleOnboard(forms.onboard);
 
   //handleOnboardingRedirect();
   handleProfile(forms.profile);

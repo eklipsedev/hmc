@@ -261,7 +261,7 @@ export const setImageItem = (form, src, altText = '', fileId = '', file, action,
   deleteBtn.addEventListener('click', () => {
     actions.style.display = 'none';
 
-    deleteImage(fileId);
+    deleteImage(form, fileId);
     currentImageCount -= 1;
 
     clonedListItem.remove();
@@ -294,7 +294,7 @@ export const setImageItem = (form, src, altText = '', fileId = '', file, action,
   clonedListItem.style.display = 'flex';
 };
 
-export const deleteImage = (fileId) => {
+export const deleteImage = (form, fileId) => {
   const image = allImages.find((img) => img.fileId === fileId);
 
   if (image && !image.file) {
