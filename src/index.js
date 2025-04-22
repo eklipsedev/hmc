@@ -3,6 +3,7 @@ import { handleAccount } from './account';
 import { handleCompanyNameToSlug } from './account/helpers';
 import { handleConcreteCalculator } from './calculators/concreteCalculator';
 import { handleRebarCalculator } from './calculators/rebarCalculator';
+import { handleContractorForm } from './contractorForm';
 import { handleMap } from './map';
 import { handleContractorSearch } from './map/handleContractorSearch';
 import { handleLocationTracker } from './map/locationTracker';
@@ -27,4 +28,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   handleStateMap();
 
   handlePhoneValidation();
+  handleContractorForm();
 });
