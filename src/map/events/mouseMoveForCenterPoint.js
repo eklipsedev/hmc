@@ -1,5 +1,4 @@
 import { setCursor } from '../components/cursor';
-import { addDistanceLayers } from '../components/layers/radiusLayers';
 import { map } from '../components/map';
 import {
   getCircleLayer,
@@ -28,7 +27,6 @@ export const handleMouseMoveForCenterPoint = (e) => {
     });
     const polygon = turf.polygon([newRadiusCircleCoordinates]);
     const center = turf.center(polygon);
-    addDistanceLayers(center);
     //setCenterCoordinates(center.geometry.coordinates);
 
     // set new center point data

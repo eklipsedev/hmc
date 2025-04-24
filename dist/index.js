@@ -33827,7 +33827,6 @@ ${o2.vertexSource}`;
       });
       const polygon = turf.polygon([newRadiusCircleCoordinates]);
       const center = turf.center(polygon);
-      addDistanceLayers(center);
       const pointLayer = map.getSource("point");
       pointLayer.setData({
         type: "Feature",
@@ -33854,6 +33853,8 @@ ${o2.vertexSource}`;
       const data = await handleReverseGeocodingLocation();
       searchElement.value = data.features[0].place_name;
       searchElement.title = data.features[0].place_name;
+      addDistanceLayers(getCenterCoordinates());
+      setBounds(getRadiusCircleData());
       setRadius(getLocationsData());
       const filter = getFilterInstance();
       if (filter?.filtersData?.[0] && radiusElement?.value) {
@@ -33976,6 +33977,8 @@ ${o2.vertexSource}`;
               }
               const locationsData3 = filter?.listInstance?.items ? setLocationsAsGeoJSON(filter.listInstance.items) : null;
               setLocationsData(locationsData3);
+              addDistanceLayers(getCenterCoordinates());
+              setBounds(getRadiusCircleData());
               setRadius(getLocationsData());
               filter?.applyFilters();
             }

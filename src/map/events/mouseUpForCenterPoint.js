@@ -1,12 +1,16 @@
 import { displayError } from '../../utils/formUtils';
+import { setBounds } from '../actions/setBounds';
 import { setRadius } from '../actions/setRadius';
 import { setCursor } from '../components/cursor';
+import { addDistanceLayers } from '../components/layers/radiusLayers';
 import { map } from '../components/map';
 import { setLocationsAsGeoJSON } from '../data/setLocationsGeoJSON';
 import { handleReverseGeocodingLocation } from '../handleGeocodingLocations';
 import {
+  getCenterCoordinates,
   getFilterInstance,
   getLocationsData,
+  getRadiusCircleData,
   radiusElement,
   searchElement,
   setCenterCoordinates,
@@ -35,6 +39,8 @@ export const handleMouseUpForCenterPoint = async (e) => {
     searchElement.value = data.features[0].place_name;
     searchElement.title = data.features[0].place_name;
 
+    addDistanceLayers(getCenterCoordinates());
+    setBounds(getRadiusCircleData());
     setRadius(getLocationsData());
 
     const filter = getFilterInstance();

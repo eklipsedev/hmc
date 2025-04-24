@@ -192,6 +192,8 @@ export const handleMap = async () => {
               : null;
             setLocationsData(locationsData);
 
+            addDistanceLayers(getCenterCoordinates());
+            setBounds(getRadiusCircleData());
             setRadius(getLocationsData());
             filter?.applyFilters(); // triggers renderItems
           }
