@@ -1,6 +1,8 @@
 export const handleContractorForm = () => {
   const form = document.querySelector('#contractor-form');
 
+  if (!form) return;
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 

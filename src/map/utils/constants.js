@@ -8,6 +8,7 @@ export let currentCoordinates = [];
 
 export const mapElement = getElement('map');
 export const listElement = getElement('list');
+export let formElement = getElement('filters');
 export let searchElement = getElement('search');
 export let radiusElement = getElement('radius');
 export let sortElement = getElement('distance-sort');

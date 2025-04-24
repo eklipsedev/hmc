@@ -33147,6 +33147,8 @@ ${o2.vertexSource}`;
   init_live_reload();
   var handleContractorForm = () => {
     const form3 = document.querySelector("#contractor-form");
+    if (!form3)
+      return;
     form3.addEventListener("submit", async function(e) {
       e.preventDefault();
       const formData = new FormData(form3);
@@ -33190,6 +33192,7 @@ ${o2.vertexSource}`;
   var accessToken = "pk.eyJ1IjoiZWtsaXBzZS1kZXYiLCJhIjoiY2w2d2R5ODF4MmRnMzNlbno3Z2hweHRpdyJ9.m1Q43efWexhp8FjdbTuh0A";
   var mapElement = getElement("map");
   var listElement = getElement("list");
+  var formElement = getElement("filters");
   var searchElement = getElement("search");
   var radiusElement = getElement("radius");
   var sortElement = getElement("distance-sort");
@@ -34003,6 +34006,11 @@ ${o2.vertexSource}`;
       searchElement.addEventListener("keydown", () => {
         clearTimeout(getTimer());
       });
+    });
+    formElement.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+      }
     });
   };
 

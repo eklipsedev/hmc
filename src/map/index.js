@@ -25,6 +25,7 @@ import { handleMouseMoveForCenterPoint } from './events/mouseMoveForCenterPoint'
 import { handleMouseUpForCenterPoint } from './events/mouseUpForCenterPoint';
 import { handleReverseGeocodingLocation } from './handleGeocodingLocations';
 import {
+  formElement,
   getCenterCoordinates,
   getCountyData,
   getFilterInstance,
@@ -224,11 +225,19 @@ export const handleMap = async () => {
     handleRecenter();
 
     document.body.addEventListener('click', () => handlePopup(), true);
+
     searchElement.addEventListener('focus', onSearchElementFocus);
     searchElement.addEventListener('focusout', onSearchElementFocusOut);
     searchElement.addEventListener('keyup', onSearchElementKeyUp);
     searchElement.addEventListener('keydown', () => {
       clearTimeout(getTimer());
     });
+  });
+
+  // prevent form from submitting when users click enter (they keep doing it)
+  formElement.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
   });
 };
