@@ -1,4 +1,4 @@
-import { displaySuccess } from '../../utils/formUtils';
+//import { displaySuccess } from '../../utils/formUtils';
 import { bagSize, costPerBag, wastePercentage } from '../concreteCalculator/constants';
 import { calculateTotal } from '../concreteCalculator/helpers';
 import { calculateRebarTotal } from '../rebarCalculator/helpers';
@@ -61,15 +61,15 @@ export const handleChangeEvent = (e) => {
         break;
       case 'bagSize':
         setSettings({ bagSize: bagSize.value });
-        displaySuccess('bag size updated');
+        //displaySuccess('bag size updated');
         break;
       case 'costPerBag':
         setSettings({ costPerBag: setToTwoDecimals(costPerBag.value || 0) });
-        displaySuccess('cost updated');
+        //displaySuccess('cost updated');
         break;
       case 'wastePercentage':
         setSettings({ wastePercentage: wastePercentage.value });
-        displaySuccess('waste percentage updated');
+        //displaySuccess('waste percentage updated');
         break;
       default:
         return; // Exit if no other cases match
@@ -102,7 +102,7 @@ export const handleBlurEvent = (e) => {
 
   if (trimmedValue !== nameValue) {
     updateLocalStorageCalcs(e, action);
-    const calculatorName = el.closest('li')?.dataset.calculator || 'Calculator';
-    displaySuccess(`${calculatorName} name updated`);
+    //const calculatorName = el.closest('li')?.dataset.calculator || 'Calculator';
+    //displaySuccess(`${calculatorName} name updated`);
   }
 };

@@ -1,4 +1,4 @@
-import { displaySuccess } from '../../utils/formUtils';
+//import { displaySuccess } from '../../utils/formUtils';
 import { calculateTotal } from '../concreteCalculator/helpers';
 import { calculateRebarTotal } from '../rebarCalculator/helpers';
 import { body, calculator, calculatorList, empty } from './constants';
@@ -15,7 +15,7 @@ export const createCalcListItem = (e) => {
   }
   updateLocalStorageCalcs(e, 'create');
   calculator.type === 'rebar' ? calculateRebarTotal() : calculateTotal();
-  displaySuccess(`New ${type} added`);
+  //displaySuccess(`New ${type} added`);
 };
 
 // remove an existing calculator item
@@ -27,7 +27,7 @@ export const removeCalcListItem = (e) => {
     empty.style.display = 'block';
   }
   calculator.type === 'rebar' ? calculateRebarTotal() : calculateTotal();
-  displaySuccess(`${parentListItem.getAttribute('data-calculator')} removed`);
+  //displaySuccess(`${parentListItem.getAttribute('data-calculator')} removed`);
 };
 
 // reset all calculator items
@@ -44,5 +44,5 @@ export const resetCalcListItems = (e) => {
   }
   calculator.type === 'rebar' ? calculateRebarTotal() : calculateTotal();
   body.scrollTop = document.documentElement.scrollTop = 0;
-  displaySuccess('Calculator Reset');
+  //displaySuccess('Calculator Reset');
 };

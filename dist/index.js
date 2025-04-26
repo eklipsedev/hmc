@@ -32831,7 +32831,6 @@ ${o2.vertexSource}`;
     }
     updateLocalStorageCalcs(e, "create");
     calculator.type === "rebar" ? calculateRebarTotal() : calculateTotal();
-    displaySuccess(`New ${type} added`);
   };
   var removeCalcListItem = (e) => {
     const parentListItem = e.target.closest("li");
@@ -32841,7 +32840,6 @@ ${o2.vertexSource}`;
       empty2.style.display = "block";
     }
     calculator.type === "rebar" ? calculateRebarTotal() : calculateTotal();
-    displaySuccess(`${parentListItem.getAttribute("data-calculator")} removed`);
   };
   var resetCalcListItems = (e) => {
     if (calculator.type === "main") {
@@ -32856,7 +32854,6 @@ ${o2.vertexSource}`;
     }
     calculator.type === "rebar" ? calculateRebarTotal() : calculateTotal();
     body.scrollTop = document.documentElement.scrollTop = 0;
-    displaySuccess("Calculator Reset");
   };
 
   // src/calculators/utils/events.js
@@ -32900,15 +32897,12 @@ ${o2.vertexSource}`;
           break;
         case "bagSize":
           setSettings({ bagSize: bagSize.value });
-          displaySuccess("bag size updated");
           break;
         case "costPerBag":
           setSettings({ costPerBag: setToTwoDecimals(costPerBag.value || 0) });
-          displaySuccess("cost updated");
           break;
         case "wastePercentage":
           setSettings({ wastePercentage: wastePercentage2.value });
-          displaySuccess("waste percentage updated");
           break;
         default:
           return;
@@ -32934,8 +32928,6 @@ ${o2.vertexSource}`;
     el.value = trimmedValue;
     if (trimmedValue !== nameValue) {
       updateLocalStorageCalcs(e, action);
-      const calculatorName = el.closest("li")?.dataset.calculator || "Calculator";
-      displaySuccess(`${calculatorName} name updated`);
     }
   };
 
