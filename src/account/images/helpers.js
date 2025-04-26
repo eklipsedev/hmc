@@ -13,7 +13,7 @@ import { enableSubmitButton, getFormData, hasFormDataChanged } from '../helpers'
 
 let allImages = [];
 
-let imageLimit = 10;
+let imageLimit = 25;
 let currentImageCount = 0;
 
 let currentAltText;
