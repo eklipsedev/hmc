@@ -6,10 +6,8 @@ export let quills = [];
 
 export const setupQuillEditors = () => {
   const member = getMember();
-  console.log('member: ', member);
 
   const isPremiumUser = member?.data?.planConnections.some((plan) => plan.type === 'SUBSCRIPTION');
-  console.log('isPremiumUser: ', isPremiumUser);
 
   if (editors.length) {
     editors.forEach((editor) => {

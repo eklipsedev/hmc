@@ -12,7 +12,6 @@ export const initializeMember = async () => {
   if (memberstack) {
     try {
       member = await memberstack.getCurrentMember();
-      console.log('[initializeMember] member:', member);
       memberId = member?.data?.id || null;
       memberCustomFields = member?.data?.customFields || null;
       memberPlans = member?.data?.planConnections || [];
