@@ -1,4 +1,4 @@
-import { memberCustomFields } from '../../memberstack/memberstack';
+import { getMemberCustomFields } from '../../memberstack/memberstack';
 import { disableSubmitButton, enableSubmitButton } from '../helpers';
 import {
   addressState,
@@ -41,8 +41,8 @@ export const validateAddress = async (form, formData) => {
     mapboxsearch.config.accessToken = MAPBOX_SEARCH_TOKEN;
     const result = await mapboxsearch.confirmAddress(form.formElement, { theme });
 
-    const memberCounty = memberCustomFields.county;
-    const memberState = memberCustomFields['state-full'];
+    const memberCounty = getMemberCustomFields().county;
+    const memberState = getMemberCustomFields()['state-full'];
 
     if (result.type === 'nochange') {
       updateHiddenAddressInputs(form);

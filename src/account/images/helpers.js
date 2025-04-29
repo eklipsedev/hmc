@@ -1,4 +1,4 @@
-import { memberId, memberstack } from '../../memberstack/memberstack';
+import { getMemberId, memberstack } from '../../memberstack/memberstack';
 import { displayError, displayLoader, displaySuccess, hideLoader } from '../../utils/formUtils';
 import { getElement } from '../../utils/helpers';
 import {
@@ -169,7 +169,7 @@ export const setAndUploadImageData = async () => {
   try {
     // Collect all form data
     const formData = new FormData();
-    formData.append('memberId', JSON.stringify(memberId));
+    formData.append('memberId', JSON.stringify(getMemberId()));
 
     // Filter images that have files (skip those without files)
     const validImages = allImages.filter((image) => image.file);

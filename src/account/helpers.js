@@ -1,4 +1,4 @@
-import { memberCustomFields, memberstack } from '../memberstack/memberstack';
+import { getMemberCustomFields, memberstack } from '../memberstack/memberstack';
 import { displayError, displayLoader, displaySuccess, hideLoader } from '../utils/formUtils';
 import { validateAddress } from './address/helpers';
 import { forms, getlastSubmittedData, setLastSubmittedData, submitBtn } from './constants';
@@ -75,7 +75,7 @@ const stringToSlug = (text) => {
 
 export const handleProfileInputChanges = (form) => {
   disableSubmitButton();
-  setLastSubmittedData({ ...memberCustomFields });
+  setLastSubmittedData({ ...getMemberCustomFields() });
 
   let currentFormData = getFormData(form.formElement);
 

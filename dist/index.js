@@ -31173,15 +31173,19 @@ ${o2.vertexSource}`;
     if (memberstack) {
       try {
         member = await memberstack.getCurrentMember();
+        console.log("[initializeMember] member:", member);
         memberId = member?.data?.id || null;
         memberCustomFields = member?.data?.customFields || null;
-        memberPlans = member?.data?.planConnections || null;
-        memberIsPremium = memberPlans && memberPlans.length;
+        memberPlans = member?.data?.planConnections || [];
+        memberIsPremium = memberPlans.some((plan) => plan.type === "SUBSCRIPTION");
       } catch (error) {
         console.error("Error fetching member data:", error);
       }
     }
   };
+  var getMember = () => member;
+  var getMemberCustomFields = () => memberCustomFields;
+  var getMemberId = () => memberId;
 
   // src/account/address/index.js
   init_live_reload();
@@ -31460,8 +31464,8 @@ ${o2.vertexSource}`;
     try {
       mapboxsearch.config.accessToken = MAPBOX_SEARCH_TOKEN;
       const result = await mapboxsearch.confirmAddress(form3.formElement, { theme });
-      const memberCounty = memberCustomFields.county;
-      const memberState = memberCustomFields["state-full"];
+      const memberCounty = getMemberCustomFields().county;
+      const memberState = getMemberCustomFields()["state-full"];
       if (result.type === "nochange") {
         updateHiddenAddressInputs(form3);
         const refetchData = memberCounty !== addressState.county || memberState !== addressState.state;
@@ -31524,7 +31528,7 @@ ${o2.vertexSource}`;
   // src/account/images/helpers.js
   init_live_reload();
   var allImages = [];
-  var imageLimit = 10;
+  var imageLimit = 25;
   var currentImageCount = 0;
   var currentAltText;
   var setImages = (form3, images) => {
@@ -31638,7 +31642,7 @@ ${o2.vertexSource}`;
   var setAndUploadImageData = async () => {
     try {
       const formData = new FormData();
-      formData.append("memberId", JSON.stringify(memberId));
+      formData.append("memberId", JSON.stringify(getMemberId()));
       const validImages = allImages.filter((image) => image.file);
       validImages.forEach((image) => {
         formData.append("images[]", image.file);
@@ -31937,7 +31941,7 @@ ${o2.vertexSource}`;
   };
   var handleProfileInputChanges = (form3) => {
     disableSubmitButton();
-    setLastSubmittedData({ ...memberCustomFields });
+    setLastSubmittedData({ ...getMemberCustomFields() });
     let currentFormData = getFormData(form3.formElement);
     for (const key in currentFormData) {
       if (currentFormData.hasOwnProperty(key)) {
@@ -32100,8 +32104,8 @@ ${o2.vertexSource}`;
       disableSubmitButton();
       handleImageFormSubmit(form3);
     }
-    setLastSubmittedData({ ...memberCustomFields });
-    const savedImages = JSON.parse(memberCustomFields.images || null);
+    setLastSubmittedData({ ...getMemberCustomFields() });
+    const savedImages = JSON.parse(getMemberCustomFields().images || null);
     handleFileClick(form3);
     handleFileInputChange(form3);
     setImages(form3, savedImages);
@@ -32129,8 +32133,8 @@ ${o2.vertexSource}`;
   init_live_reload();
   var setLiveLink = () => {
     const link = getElement("live-link");
-    if (link && memberCustomFields.slug) {
-      link.href = `/contractors/${memberCustomFields.slug}`;
+    if (link && getMemberCustomFields().slug) {
+      link.href = `/contractors/${getMemberCustomFields().slug}`;
     }
   };
 
@@ -32141,7 +32145,7 @@ ${o2.vertexSource}`;
   init_live_reload();
   var selectedServices = [];
   var setServices = async (form3) => {
-    const savedServices = memberCustomFields.services?.split(",") || [];
+    const savedServices = getMemberCustomFields().services?.split(",") || [];
     const items = form3["services-list"].querySelectorAll(".w-dyn-item");
     items.forEach((item) => {
       const checkbox = item.querySelector("input[type='checkbox']");
@@ -32182,7 +32186,7 @@ ${o2.vertexSource}`;
 
   // src/account/index.js
   var handleAccount = async () => {
-    if (!member)
+    if (!getMember())
       return;
     handleProfile(forms.profile);
     handleServices(forms.services);
@@ -34132,31 +34136,40 @@ ${o2.vertexSource}`;
   // src/textEditor/index.js
   init_live_reload();
 
-  // src/textEditor/saveQuillContent.js
-  init_live_reload();
-
   // src/textEditor/quill.js
   init_live_reload();
   var editors = document.querySelectorAll("[data-element='text-editor']") || [];
   var quills = [];
-  if (editors.length) {
-    editors.forEach((editor) => {
-      const quillInstance = new Quill(editor, {
-        modules: {
-          toolbar: [
-            [{ header: [2, 3, false] }],
-            ["bold", "italic"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["link"]
-          ]
-        },
-        formats: ["bold", "italic", "header", "list", "link"],
-        placeholder: "",
-        theme: "snow"
+  var setupQuillEditors = () => {
+    const member2 = getMember();
+    console.log("member: ", member2);
+    const isPremiumUser = member2?.data?.planConnections.some((plan) => plan.type === "SUBSCRIPTION");
+    console.log("isPremiumUser: ", isPremiumUser);
+    if (editors.length) {
+      editors.forEach((editor) => {
+        const toolbarOptions = [
+          [{ header: [2, 3, false] }],
+          ["bold", "italic"],
+          [{ list: "ordered" }, { list: "bullet" }]
+        ];
+        if (isPremiumUser) {
+          toolbarOptions.push(["link"]);
+        }
+        const quillInstance = new Quill(editor, {
+          modules: {
+            toolbar: toolbarOptions
+          },
+          formats: isPremiumUser ? ["bold", "italic", "header", "list", "link"] : ["bold", "italic", "header", "list"],
+          placeholder: "",
+          theme: "snow"
+        });
+        quills.push(quillInstance);
       });
-      quills.push(quillInstance);
-    });
-  }
+    }
+  };
+
+  // src/textEditor/saveQuillContent.js
+  init_live_reload();
 
   // src/textEditor/utils.js
   init_live_reload();
@@ -34193,6 +34206,7 @@ ${o2.vertexSource}`;
 
   // src/textEditor/index.js
   var handleQuillEditor = () => {
+    setupQuillEditors();
     setQuillEditor();
     saveQuillContent();
   };

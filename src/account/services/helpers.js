@@ -1,9 +1,9 @@
-import { memberCustomFields } from '../../memberstack/memberstack';
+import { getMemberCustomFields } from '../../memberstack/memberstack';
 
 let selectedServices = [];
 
 export const setServices = async (form) => {
-  const savedServices = memberCustomFields.services?.split(',') || [];
+  const savedServices = getMemberCustomFields().services?.split(',') || [];
 
   const items = form['services-list'].querySelectorAll('.w-dyn-item');
   items.forEach((item) => {

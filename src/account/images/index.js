@@ -1,4 +1,4 @@
-import { memberCustomFields } from '../../memberstack/memberstack';
+import { getMemberCustomFields } from '../../memberstack/memberstack';
 import { setLastSubmittedData } from '../constants';
 import { imagesForm } from '../constants';
 import { disableSubmitButton } from '../helpers';
@@ -25,9 +25,9 @@ export const handleImages = (form) => {
     handleImageFormSubmit(form);
   }
 
-  setLastSubmittedData({ ...memberCustomFields });
+  setLastSubmittedData({ ...getMemberCustomFields() });
 
-  const savedImages = JSON.parse(memberCustomFields.images || null);
+  const savedImages = JSON.parse(getMemberCustomFields().images || null);
 
   handleFileClick(form);
   handleFileInputChange(form);
