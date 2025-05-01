@@ -31173,7 +31173,6 @@ ${o2.vertexSource}`;
     if (memberstack) {
       try {
         member = await memberstack.getCurrentMember();
-        console.log("[initializeMember] member:", member);
         memberId = member?.data?.id || null;
         memberCustomFields = member?.data?.customFields || null;
         memberPlans = member?.data?.planConnections || [];
@@ -31903,11 +31902,6 @@ ${o2.vertexSource}`;
           if (isValid)
             currentFormData = validation.formData;
         }
-        if (!isValid) {
-          hideLoader(submitBtn, false);
-          displayError("Invalid address data. Please try again.");
-          return;
-        }
         const updatedMemberstackData = await memberstack.updateMember({
           customFields: currentFormData
         });
@@ -32037,6 +32031,7 @@ ${o2.vertexSource}`;
       handleSubmitProfileForm(form3, "address");
     }
     setAddressFromMapbox(form3);
+    handleProfileInputChanges(form3);
   };
 
   // src/account/handleNewEmailForm.js
@@ -33410,16 +33405,16 @@ ${o2.vertexSource}`;
     locationsData2.features = [];
     items.forEach((item, index) => {
       const { element } = item;
-      const longitude = Number(element.getAttribute("data-lng"));
-      const latitude = Number(element.getAttribute("data-lat"));
-      const name = getElement("name", element).textContent;
-      const slug = element.querySelector("a").href;
-      const street = getElement("street", element).textContent;
-      const city = getElement("city", element).textContent;
-      const state = getElement("state", element).textContent;
-      const zipCode = getElement("zip-code", element).textContent;
-      const phoneText = getElement("phone", element).textContent;
-      const phoneNumber = getElement("phone", element).href;
+      const longitude = Number(element.getAttribute("data-lng")) || 0;
+      const latitude = Number(element.getAttribute("data-lat")) || 0;
+      const name = getElement("name", element)?.textContent?.trim() || "";
+      const slug = element.querySelector("a")?.href || "";
+      const street = getElement("street", element)?.textContent?.trim() || "";
+      const city = getElement("city", element)?.textContent?.trim() || "";
+      const state = getElement("state", element)?.textContent?.trim() || "";
+      const zipCode = getElement("zip-code", element)?.textContent?.trim() || "";
+      const phoneText = getElement("phone", element)?.textContent?.trim() || "";
+      const phoneNumber = getElement("phone", element)?.href || "";
       const verified = getElement("verified", element).textContent === "true" ? true : false;
       const data = {
         type: "Feature",
@@ -34142,9 +34137,7 @@ ${o2.vertexSource}`;
   var quills = [];
   var setupQuillEditors = () => {
     const member2 = getMember();
-    console.log("member: ", member2);
     const isPremiumUser = member2?.data?.planConnections.some((plan) => plan.type === "SUBSCRIPTION");
-    console.log("isPremiumUser: ", isPremiumUser);
     if (editors.length) {
       editors.forEach((editor) => {
         const toolbarOptions = [

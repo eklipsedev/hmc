@@ -1,5 +1,9 @@
 import { addressForm } from '../constants';
-import { disableSubmitButton, handleSubmitProfileForm } from '../helpers';
+import {
+  disableSubmitButton,
+  handleProfileInputChanges,
+  handleSubmitProfileForm,
+} from '../helpers';
 import { setAddressFromMapbox } from './helpers';
 
 export const handleAddress = (form) => {
@@ -14,4 +18,5 @@ export const handleAddress = (form) => {
   }
 
   setAddressFromMapbox(form);
+  handleProfileInputChanges(form);
 };

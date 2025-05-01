@@ -20,11 +20,11 @@ export const handleSubmitProfileForm = (form, type) => {
         if (isValid) currentFormData = validation.formData;
       }
 
-      if (!isValid) {
-        hideLoader(submitBtn, false);
-        displayError('Invalid address data. Please try again.');
-        return;
-      }
+      //if (!isValid) {
+      //  hideLoader(submitBtn, false);
+      //  displayError('Invalid address data. Please try again.');
+      //  return;
+      //}
 
       const updatedMemberstackData = await memberstack.updateMember({
         customFields: currentFormData,
