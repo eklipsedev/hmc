@@ -1,9 +1,5 @@
 import { addressForm } from '../constants';
-import {
-  disableSubmitButton,
-  handleProfileInputChanges,
-  handleSubmitProfileForm,
-} from '../helpers';
+import { handleProfileInputChanges, handleSubmitProfileForm } from '../helpers';
 import { setAddressFromMapbox } from './helpers';
 
 export const handleAddress = (form) => {
@@ -13,10 +9,9 @@ export const handleAddress = (form) => {
 
   // only run this if not onboarding
   if (isAddressForm) {
-    disableSubmitButton();
+    setAddressFromMapbox(form);
+    handleProfileInputChanges(form);
+
     handleSubmitProfileForm(form, 'address');
   }
-
-  setAddressFromMapbox(form);
-  handleProfileInputChanges(form);
 };

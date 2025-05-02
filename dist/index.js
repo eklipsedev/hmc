@@ -31404,8 +31404,8 @@ ${o2.vertexSource}`;
   var MAPBOX_SEARCH_TOKEN = "pk.eyJ1IjoiZWtsaXBzZS1kZXYiLCJhIjoiY2w2d2R5ODF4MmRnMzNlbno3Z2hweHRpdyJ9.m1Q43efWexhp8FjdbTuh0A";
   var STATE_COUNTY_API_ENDPOINT = "https://state-county-manager-worker.josh-8e8.workers.dev/";
   var addressState = {
-    fullAddress: "",
-    fullState: "",
+    ["full-address"]: "",
+    ["state-full"]: "",
     country: "",
     county: "",
     lat: "",
@@ -31449,8 +31449,8 @@ ${o2.vertexSource}`;
     const data = e.detail.features[0];
     const [lng, lat] = data.geometry.coordinates;
     Object.assign(addressState, {
-      fullAddress: data.properties.full_address,
-      fullState: data.properties.region,
+      "full-address": data.properties.full_address,
+      "state-full": data.properties.region,
       country: data.properties.country,
       county: data.properties.district,
       lat,
@@ -31459,37 +31459,39 @@ ${o2.vertexSource}`;
     updateHiddenAddressInputs(form3);
     enableSubmitButton();
   };
-  var validateAddress = async (form3, formData) => {
+  var validateAddress = async (form3) => {
     try {
       mapboxsearch.config.accessToken = MAPBOX_SEARCH_TOKEN;
       const result = await mapboxsearch.confirmAddress(form3.formElement, { theme });
       const memberCounty = getMemberCustomFields().county;
       const memberState = getMemberCustomFields()["state-full"];
-      if (result.type === "nochange") {
-        updateHiddenAddressInputs(form3);
+      if (result.type === "nochange" || result.type === "change") {
+        getAutofillCollection().addEventListener("retrieve", (e) => handleRetrieveEvent(form3, e));
         const refetchData = memberCounty !== addressState.county || memberState !== addressState.state;
         if (refetchData) {
           const data = await fetchCountyFromWebflow();
-          enableSubmitButton();
           if (data) {
-            const normalizedData = {
-              stateId: data.countyItem.fieldData.state,
-              countyId: data.countyItem.id
+            return {
+              status: true,
+              data: {
+                ...addressState,
+                "state-id": data.countyItem.fieldData.state,
+                "county-id": data.countyItem.id
+              }
             };
-            return { status: true, data: normalizedData };
           }
           return { status: false };
         }
         return {
           status: true,
           data: {
-            stateId: formData["state-id"],
-            countyId: formData["county-id"]
+            ...addressState,
+            "state-id": formData["state-id"],
+            "county-id": formData["county-id"]
           }
         };
       }
       disableSubmitButton();
-      return { status: false };
     } catch (error) {
       console.error("Error validating address:", error);
       return { status: false };
@@ -31500,10 +31502,10 @@ ${o2.vertexSource}`;
       const response = await fetch(STATE_COUNTY_API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ state: addressState.fullState, county: addressState.county })
+        body: JSON.stringify({ state: addressState["state-full"], county: addressState.county })
       });
       if (!response.ok)
-        throw new Error(`API Error: ${response.status}`);
+        throw new Error(response.status);
       return await response.json();
     } catch (error) {
       console.error("Error fetching state and county:", error.message);
@@ -31511,7 +31513,14 @@ ${o2.vertexSource}`;
     }
   };
   var updateHiddenAddressInputs = (form3) => {
-    const { fullAddress, fullState, country, county, lat, lng } = addressState;
+    const {
+      ["full-address"]: fullAddress,
+      ["state-full"]: fullState,
+      country,
+      county,
+      lat,
+      lng
+    } = addressState;
     setInputValue(form3["full-address"], fullAddress);
     setInputValue(form3["full-state"], fullState);
     setInputValue(form3.country, country);
@@ -31599,10 +31608,10 @@ ${o2.vertexSource}`;
         });
       });
       await Promise.all(imageProcessingPromises);
-      const formData = getFormData(form3.formElement);
+      const formData2 = getFormData(form3.formElement);
       const lastSubmittedData2 = getlastSubmittedData();
       setLastSubmittedData({ ...lastSubmittedData2, images: JSON.stringify(allImages) });
-      const hasChanges = hasFormDataChanged(formData, getlastSubmittedData());
+      const hasChanges = hasFormDataChanged(formData2, getlastSubmittedData());
       if (hasChanges) {
         enableSubmitButton();
       }
@@ -31640,11 +31649,11 @@ ${o2.vertexSource}`;
   };
   var setAndUploadImageData = async () => {
     try {
-      const formData = new FormData();
-      formData.append("memberId", JSON.stringify(getMemberId()));
+      const formData2 = new FormData();
+      formData2.append("memberId", JSON.stringify(getMemberId()));
       const validImages = allImages.filter((image) => image.file);
       validImages.forEach((image) => {
-        formData.append("images[]", image.file);
+        formData2.append("images[]", image.file);
       });
       const imagesMetadata = allImages.map((image) => ({
         url: image.file ? null : image.url,
@@ -31654,10 +31663,10 @@ ${o2.vertexSource}`;
         order: image.order,
         action: image.action
       }));
-      formData.append("imagesMetadata", JSON.stringify(imagesMetadata));
+      formData2.append("imagesMetadata", JSON.stringify(imagesMetadata));
       const response = await fetch("https://images-worker-manager.josh-8e8.workers.dev/", {
         method: "POST",
-        body: formData
+        body: formData2
       });
       return response;
     } catch (error) {
@@ -31737,10 +31746,10 @@ ${o2.vertexSource}`;
     } else {
       allImages = allImages.filter((img) => img.fileId !== fileId);
     }
-    const formData = getFormData(form3.formElement);
+    const formData2 = getFormData(form3.formElement);
     const lastSubmittedData2 = getlastSubmittedData();
     setLastSubmittedData({ ...lastSubmittedData2, images: JSON.stringify(allImages) });
-    const hasChanges = hasFormDataChanged(formData, getlastSubmittedData());
+    const hasChanges = hasFormDataChanged(formData2, getlastSubmittedData());
     if (hasChanges) {
       enableSubmitButton();
     }
@@ -31754,10 +31763,10 @@ ${o2.vertexSource}`;
       } else {
         image.action = "toUpload";
       }
-      const formData = getFormData(form.formElement);
+      const formData2 = getFormData(form.formElement);
       const lastSubmittedData2 = getlastSubmittedData();
       setLastSubmittedData({ ...lastSubmittedData2, images: JSON.stringify(allImages) });
-      const hasChanges = hasFormDataChanged(formData, getlastSubmittedData());
+      const hasChanges = hasFormDataChanged(formData2, getlastSubmittedData());
       if (hasChanges) {
         enableSubmitButton();
       }
@@ -31832,10 +31841,10 @@ ${o2.vertexSource}`;
         }
       }
       updateImageOrder();
-      const formData = getFormData(form3.formElement);
+      const formData2 = getFormData(form3.formElement);
       const lastSubmittedData2 = getlastSubmittedData();
       setLastSubmittedData({ ...lastSubmittedData2, images: JSON.stringify(allImages) });
-      const hasChanges = hasFormDataChanged(formData, getlastSubmittedData());
+      const hasChanges = hasFormDataChanged(formData2, getlastSubmittedData());
       if (hasChanges) {
         enableSubmitButton();
       }
@@ -31894,13 +31903,11 @@ ${o2.vertexSource}`;
       e.preventDefault();
       displayLoader(submitBtn, "Saving...");
       let currentFormData = getFormData(form3.formElement);
-      let isValid = type !== "address";
       try {
         if (type === "address") {
-          const validation = await saveAddressStepData(form3, currentFormData);
-          isValid = validation.isValid;
-          if (isValid)
-            currentFormData = validation.formData;
+          const result = await validateAddress(form3);
+          if (result.data)
+            currentFormData = { ...currentFormData, ...result.data };
         }
         const updatedMemberstackData = await memberstack.updateMember({
           customFields: currentFormData
@@ -31964,11 +31971,11 @@ ${o2.vertexSource}`;
       window.history.replaceState(null, "", url);
     }
   };
-  var hasFormDataChanged = (formData, lastSubmittedData2) => {
-    for (const key in formData) {
+  var hasFormDataChanged = (formData2, lastSubmittedData2) => {
+    for (const key in formData2) {
       if (key === "images") {
         const parsedImagesArray = JSON.parse(lastSubmittedData2[key] || "[]");
-        const currentImagesArray = JSON.parse(formData[key] || "[]");
+        const currentImagesArray = JSON.parse(formData2[key] || "[]");
         const hasActionValue = parsedImagesArray.some((obj) => obj.action !== "");
         if (hasActionValue) {
           return true;
@@ -31984,7 +31991,7 @@ ${o2.vertexSource}`;
           return true;
         }
       } else {
-        if (formData[key] !== lastSubmittedData2[key]) {
+        if (formData2[key] !== lastSubmittedData2[key]) {
           return true;
         }
       }
@@ -32012,14 +32019,6 @@ ${o2.vertexSource}`;
     submitBtn.disabled = true;
     submitBtn.title = title;
   };
-  var saveAddressStepData = async (form3, formData) => {
-    const result = await validateAddress(form3, formData);
-    if (!result.status)
-      return { isValid: false };
-    formData["state-id"] = result.data.stateId || null;
-    formData["county-id"] = result.data.countyId || null;
-    return { isValid: true, formData };
-  };
 
   // src/account/address/index.js
   var handleAddress = (form3) => {
@@ -32027,11 +32026,10 @@ ${o2.vertexSource}`;
       return;
     const isAddressForm = form3.formElement === addressForm;
     if (isAddressForm) {
-      disableSubmitButton();
+      setAddressFromMapbox(form3);
+      handleProfileInputChanges(form3);
       handleSubmitProfileForm(form3, "address");
     }
-    setAddressFromMapbox(form3);
-    handleProfileInputChanges(form3);
   };
 
   // src/account/handleNewEmailForm.js
@@ -33142,8 +33140,8 @@ ${o2.vertexSource}`;
       return;
     form3.addEventListener("submit", async function(e) {
       e.preventDefault();
-      const formData = new FormData(form3);
-      const data = Object.fromEntries(formData.entries());
+      const formData2 = new FormData(form3);
+      const data = Object.fromEntries(formData2.entries());
       const pathParts = window.location.pathname.split("/");
       const slug = pathParts[pathParts.length - 1];
       data.slug = slug;

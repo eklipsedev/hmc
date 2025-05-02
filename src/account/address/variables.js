@@ -6,9 +6,9 @@ export const STATE_COUNTY_API_ENDPOINT =
   'https://state-county-manager-worker.josh-8e8.workers.dev/';
 
 // Address state encapsulation
-export const addressState = {
-  fullAddress: '',
-  fullState: '',
+export let addressState = {
+  ['full-address']: '',
+  ['state-full']: '',
   country: '',
   county: '',
   lat: '',

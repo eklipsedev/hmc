@@ -11,20 +11,13 @@ export const handleSubmitProfileForm = (form, type) => {
     displayLoader(submitBtn, 'Saving...');
 
     let currentFormData = getFormData(form.formElement);
-    let isValid = type !== 'address'; // Default to true if not an address
 
     try {
       if (type === 'address') {
-        const validation = await saveAddressStepData(form, currentFormData);
-        isValid = validation.isValid;
-        if (isValid) currentFormData = validation.formData;
+        const result = await validateAddress(form);
+        //const validation = await saveAddressStepData(form, currentFormData);
+        if (result.data) currentFormData = { ...currentFormData, ...result.data };
       }
-
-      //if (!isValid) {
-      //  hideLoader(submitBtn, false);
-      //  displayError('Invalid address data. Please try again.');
-      //  return;
-      //}
 
       const updatedMemberstackData = await memberstack.updateMember({
         customFields: currentFormData,
@@ -258,13 +251,17 @@ export const disableSubmitButton = (title = 'No changes to save') => {
 };
 
 export const saveAddressStepData = async (form, formData) => {
+  console.log("saving address step data...here's the form data: ", formData);
   const result = await validateAddress(form, formData);
-  if (!result.status) return { isValid: false };
+  console.log('the result: ', result);
+  //if (!result.status) return { isValid: false };
 
   formData['state-id'] = result.data.stateId || null;
   formData['county-id'] = result.data.countyId || null;
 
-  return { isValid: true, formData };
+  console.log('good to go, saving this data: ', formData);
+
+  return { formData };
 };
 
 export const saveImagesStepData = async () => {

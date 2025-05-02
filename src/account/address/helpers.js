@@ -23,8 +23,8 @@ const handleRetrieveEvent = async (form, e) => {
   const [lng, lat] = data.geometry.coordinates;
 
   Object.assign(addressState, {
-    fullAddress: data.properties.full_address,
-    fullState: data.properties.region,
+    'full-address': data.properties.full_address,
+    'state-full': data.properties.region,
     country: data.properties.country,
     county: data.properties.district,
     lat,
@@ -36,7 +36,7 @@ const handleRetrieveEvent = async (form, e) => {
 };
 
 // Validate the address and fetch state/county information
-export const validateAddress = async (form, formData) => {
+export const validateAddress = async (form) => {
   try {
     mapboxsearch.config.accessToken = MAPBOX_SEARCH_TOKEN;
     const result = await mapboxsearch.confirmAddress(form.formElement, { theme });
@@ -44,8 +44,8 @@ export const validateAddress = async (form, formData) => {
     const memberCounty = getMemberCustomFields().county;
     const memberState = getMemberCustomFields()['state-full'];
 
-    if (result.type === 'nochange') {
-      updateHiddenAddressInputs(form);
+    if (result.type === 'nochange' || result.type === 'change') {
+      getAutofillCollection().addEventListener('retrieve', (e) => handleRetrieveEvent(form, e));
 
       const refetchData =
         memberCounty !== addressState.county || memberState !== addressState.state;
@@ -54,32 +54,34 @@ export const validateAddress = async (form, formData) => {
       if (refetchData) {
         const data = await fetchCountyFromWebflow();
 
-        enableSubmitButton();
-
         if (data) {
-          const normalizedData = {
-            stateId: data.countyItem.fieldData.state,
-            countyId: data.countyItem.id,
+          return {
+            status: true,
+            data: {
+              ...addressState,
+              'state-id': data.countyItem.fieldData.state,
+              'county-id': data.countyItem.id,
+            },
           };
-
-          return { status: true, data: normalizedData };
         }
 
         return { status: false };
       }
       // Didn't fetch from API, just return same form data
+
       return {
         status: true,
         data: {
-          stateId: formData['state-id'],
-          countyId: formData['county-id'],
+          ...addressState,
+          'state-id': formData['state-id'],
+          'county-id': formData['county-id'],
         },
       };
     }
 
     disableSubmitButton();
 
-    return { status: false };
+    //return { status: false };
   } catch (error) {
     console.error('Error validating address:', error);
     return { status: false };
@@ -93,10 +95,10 @@ const fetchCountyFromWebflow = async () => {
     const response = await fetch(STATE_COUNTY_API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ state: addressState.fullState, county: addressState.county }),
+      body: JSON.stringify({ state: addressState['state-full'], county: addressState.county }),
     });
 
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    if (!response.ok) throw new Error(response.status);
     return await response.json();
   } catch (error) {
     console.error('Error fetching state and county:', error.message);
@@ -106,7 +108,14 @@ const fetchCountyFromWebflow = async () => {
 
 // Update hidden address inputs
 const updateHiddenAddressInputs = (form) => {
-  const { fullAddress, fullState, country, county, lat, lng } = addressState;
+  const {
+    ['full-address']: fullAddress,
+    ['state-full']: fullState,
+    country,
+    county,
+    lat,
+    lng,
+  } = addressState;
 
   setInputValue(form['full-address'], fullAddress);
   setInputValue(form['full-state'], fullState);
