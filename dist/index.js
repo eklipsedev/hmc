@@ -31924,22 +31924,6 @@ ${o2.vertexSource}`;
     };
     form3.formElement.addEventListener("submit", handleSubmit);
   };
-  var handleCompanyNameToSlug = () => {
-    const companyNameInput = document.querySelector('[data-ms-member="company-name"]');
-    if (!companyNameInput)
-      return;
-    companyNameInput.addEventListener("input", (e) => {
-      const companyName = e.target.value;
-      const slugifiedName = stringToSlug(companyName);
-      const nextSiblingInput = companyNameInput.nextElementSibling;
-      if (nextSiblingInput && nextSiblingInput.tagName === "INPUT") {
-        nextSiblingInput.value = slugifiedName;
-      }
-    });
-  };
-  var stringToSlug = (text) => {
-    return text.toLowerCase().replace(/&/g, "and").replace(/\band\b/g, "").replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-").replace(/--+/g, "-");
-  };
   var handleProfileInputChanges = (form3) => {
     disableSubmitButton();
     setLastSubmittedData({ ...getMemberCustomFields() });
@@ -34206,7 +34190,6 @@ ${o2.vertexSource}`;
   document.addEventListener("DOMContentLoaded", async () => {
     await initializeMember();
     handleAccount();
-    handleCompanyNameToSlug();
     handleMap();
     handleContractorSearch();
     handleLocationTracker();

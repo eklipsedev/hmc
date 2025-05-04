@@ -38,6 +38,7 @@ export const handleSubmitProfileForm = (form, type) => {
   form.formElement.addEventListener('submit', handleSubmit);
 };
 
+/*
 export const handleCompanyNameToSlug = () => {
   const companyNameInput = document.querySelector('[data-ms-member="company-name"]');
 
@@ -65,6 +66,7 @@ const stringToSlug = (text) => {
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/--+/g, '-'); // Remove consecutive hyphens
 };
+*/
 
 export const handleProfileInputChanges = (form) => {
   disableSubmitButton();
@@ -251,15 +253,11 @@ export const disableSubmitButton = (title = 'No changes to save') => {
 };
 
 export const saveAddressStepData = async (form, formData) => {
-  console.log("saving address step data...here's the form data: ", formData);
   const result = await validateAddress(form, formData);
-  console.log('the result: ', result);
   //if (!result.status) return { isValid: false };
 
   formData['state-id'] = result.data.stateId || null;
   formData['county-id'] = result.data.countyId || null;
-
-  console.log('good to go, saving this data: ', formData);
 
   return { formData };
 };

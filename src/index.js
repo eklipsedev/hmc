@@ -1,6 +1,6 @@
 import { handleAccount } from './account';
 //import { initializeForms } from './account/constants';
-import { handleCompanyNameToSlug } from './account/helpers';
+//import { handleCompanyNameToSlug } from './account/helpers';
 import { handleConcreteCalculator } from './calculators/concreteCalculator';
 import { handleRebarCalculator } from './calculators/rebarCalculator';
 import { handleContractorForm } from './contractorForm';
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await initializeMember();
   handleAccount();
 
-  handleCompanyNameToSlug();
+  //handleCompanyNameToSlug();
   handleMap();
   handleContractorSearch();
   handleLocationTracker();
