@@ -31860,7 +31860,7 @@ ${o2.vertexSource}`;
       }
     });
   };
-  var resizeCompressAndConvertToWebP = async (imageFile, maxWidth, maxHeight, quality = 0.8) => {
+  var resizeCompressAndConvertToWebP = async (imageFile, maxWidth, maxHeight, quality = 1) => {
     const img = new Image();
     const objectUrl = URL.createObjectURL(imageFile);
     img.src = objectUrl;

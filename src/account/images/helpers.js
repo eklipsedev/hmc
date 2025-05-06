@@ -464,7 +464,7 @@ export const resizeCompressAndConvertToWebP = async (
   imageFile,
   maxWidth,
   maxHeight,
-  quality = 0.8
+  quality = 1
 ) => {
   const img = new Image();
   const objectUrl = URL.createObjectURL(imageFile);
