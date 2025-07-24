@@ -32,7 +32,7 @@ export const settingsTemplate = () => ({
   unitType: isImperialCountry() ? 'imperial' : 'metric',
   costType: costToggle && costToggle.checked ? 'cost-per-area' : 'cost-per-bag',
   bagSize: isImperialCountry() ? '80' : '50',
-  costPerBag: '0',
+  costPerBag: costToggle && costToggle.checked ? '170.00' : '6.00',
   wastePercentage: '0',
 });
 
