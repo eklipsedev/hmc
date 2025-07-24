@@ -17,6 +17,7 @@ export const calculator =
     type: body.getAttribute('data-calculator') || null,
     length: body.getAttribute('data-length') || null,
     width: body.getAttribute('data-width') || null,
+    cost: body.getAttribute('data-cost') || null,
   } || null;
 
 export let imperialCountry = true;
