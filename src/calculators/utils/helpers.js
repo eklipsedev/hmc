@@ -1,4 +1,4 @@
-import { costToggle } from '../concreteCalculator/constants';
+//import { costToggle } from '../concreteCalculator/constants';
 import { calculateTotal } from '../concreteCalculator/helpers';
 import { calculateRebarTotal } from '../rebarCalculator/helpers';
 import {
@@ -130,13 +130,12 @@ export const toggleCostTypeCheckbox = (e) => {
   const newCostType = e.target.checked ? 'cost-per-area' : 'cost-per-bag';
   setSettings({ costType: newCostType });
 
-  body.classList.toggle('is-cost-per-area', newCostType === 'cost-per-area');
-  body.classList.toggle('is-cost-per-bag', newCostType === 'cost-per-bag');
+  body.classList.remove('is-cost-per-area', 'is-cost-per-bag');
+  body.classList.add(`is-${newCostType}`);
 
   calculateTotals();
   updateLocalStorageCalcs(e, 'updateCostTypeValues');
 };
-
 
 // get number value of a given input
 export const getValueOfInput = (calc, row) => {
