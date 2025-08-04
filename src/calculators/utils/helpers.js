@@ -1,4 +1,4 @@
-import { costToggle } from '../concreteCalculator/constants';
+//import { costToggle } from '../concreteCalculator/constants';
 import { calculateTotal } from '../concreteCalculator/helpers';
 import { calculateRebarTotal } from '../rebarCalculator/helpers';
 import {
@@ -127,7 +127,7 @@ export const toggleUnitTypeCheckbox = (e) => {
 };
 
 export const toggleCostTypeCheckbox = (e) => {
-  const newCostType = costToggle.checked ? 'cost-per-area' : 'cost-per-bag';
+  const newCostType = e.target.checked ? 'cost-per-area' : 'cost-per-bag';
   setSettings({ costType: newCostType });
 
   body.classList.remove('is-cost-per-area', 'is-cost-per-bag');
