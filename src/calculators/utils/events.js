@@ -57,14 +57,14 @@ export const handleChangeEvent = (e) => {
         updateLocalStorageCalcs(e, 'updateUnitTypeValues');
         break;
       case 'costType':
-        toggleCostTypeCheckbox();
+        toggleCostTypeCheckbox(e);
         break;
       case 'bagSize':
         setSettings({ bagSize: bagSize.value });
         //displaySuccess('bag size updated');
         break;
       case 'costPerBag':
-        setSettings({ costPerBag: setToTwoDecimals(costPerBag.value || 0) });
+        setSettings({ costPerBag: costPerBag.value || 0 });
         //displaySuccess('cost updated');
         break;
       case 'wastePercentage':

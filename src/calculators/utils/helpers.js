@@ -127,15 +127,16 @@ export const toggleUnitTypeCheckbox = (e) => {
 };
 
 export const toggleCostTypeCheckbox = (e) => {
-  const newCostType = costToggle.checked ? 'cost-per-area' : 'cost-per-bag';
+  const newCostType = e.target.checked ? 'cost-per-area' : 'cost-per-bag';
   setSettings({ costType: newCostType });
 
-  body.classList.toggle('is-cost-per-bag', newCostType === 'cost-per-area');
-  body.classList.toggle('is-cost-per-area', newCostType === 'cost-per-bag');
+  body.classList.toggle('is-cost-per-area', newCostType === 'cost-per-area');
+  body.classList.toggle('is-cost-per-bag', newCostType === 'cost-per-bag');
 
   calculateTotals();
   updateLocalStorageCalcs(e, 'updateCostTypeValues');
 };
+
 
 // get number value of a given input
 export const getValueOfInput = (calc, row) => {
